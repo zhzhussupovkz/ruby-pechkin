@@ -58,6 +58,11 @@ class Pechkin
       raise RuntimeError, "Сервер возвращает неверный формат данных."
     end
     result = JSON.parse data
+    if result['msg']['err_code'] == '0'
+      result['data']
+    else
+      get_error result['msg']['err_code']
+    end
   end
 
   #post data
@@ -79,10 +84,15 @@ class Pechkin
       raise RuntimeError, "Сервер возвращает неверный формат данных."
     end
     result = JSON.parse data
+    if result['msg']['err_code'] == '0'
+      result['data']
+    else
+      get_error result['msg']['err_code']
+    end
   end
 
   #get errors
-  def get_error(key) {
+  def get_error key
     errors = {
       '2' => 'Ошибка при добавлении в базу',
       '3' => 'Заданы не все необходимые параметры',
