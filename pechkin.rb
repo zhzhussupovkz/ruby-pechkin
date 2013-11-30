@@ -186,7 +186,7 @@ class Pechkin
   #optional: merge_1, merge_2, type, update...
   #see: http://pechkin-mail.ru/?page=api_details&method=lists.upload
   def lists_upload list_id = nil, file = nil, email = nil, options = {}
-    raise ArgumentError.new('Не заданы обязательные параметры') if not list_id || if not file || if not email
+    raise ArgumentError.new('Не заданы обязательные параметры') if not list_id || not file || not email
     required = { 'list_id' => list_id, 'file' => file, 'email' => email }
     options = required.merge(options)
     send_data 'lists.upload', options
@@ -197,7 +197,7 @@ class Pechkin
   #optional: merge_1, merge_2..., update...
   #see: http://pechkin-mail.ru/?page=api_details&method=lists.add_member
   def lists_add_member list_id = nil, email = nil, options = {}
-    raise ArgumentError.new('Не заданы обязательные параметры') if not list_id || if not email
+    raise ArgumentError.new('Не заданы обязательные параметры') if not list_id || not email
     required = { 'list_id' => list_id, 'email' => email }
     options = required.merge(options)
     send_data 'lists.add_member', options
@@ -232,7 +232,7 @@ class Pechkin
   #lists.move_member - Перемещаем подписчика в другую адресную базу.
   #required: member_id, list_id
   def lists_move_member member_id = nil, list_id = nil
-    raise ArgumentError.new('Не заданы обязательные параметры') if not member_id || if not list_id
+    raise ArgumentError.new('Не заданы обязательные параметры') if not member_id || not list_id
     options = { 'member_id' => member_id, 'list_id' => list_id }
     send_data 'lists.move_member', options
   end
@@ -240,7 +240,7 @@ class Pechkin
   #lists.copy_member - Копируем подписчика в другую адресную базу
   #required: member_id, list_id
   def lists_copy_member member_id = nil, list_id = nil
-    raise ArgumentError.new('Не заданы обязательные параметры') if not member_id || if not list_id
+    raise ArgumentError.new('Не заданы обязательные параметры') if not member_id || not list_id
     options = { 'member_id' => member_id, 'list_id' => list_id }
     send_data 'lists.copy_member', options
   end
@@ -250,7 +250,7 @@ class Pechkin
   #optional: choises, title, ...
   #see: http://pechkin-mail.ru/?page=api_details&method=lists.add_merge
   def lists_add_merge list_id = nil, type = nil, options = {}
-    raise ArgumentError.new('Не заданы обязательные параметры') if not list_id || if not type
+    raise ArgumentError.new('Не заданы обязательные параметры') if not list_id || not type
     required = { 'list_id' => list_id, 'type' => type }
     options = required.merge(options)
     send_data 'lists.add_merge', options
@@ -261,7 +261,7 @@ class Pechkin
   #optional: choisesm title, ...
   #see: http://pechkin-mail.ru/?page=api_details&method=lists.update_merge
   def lists_update_merge list_id = nil, merge_id = nil, options = {}
-    raise ArgumentError.new('Не заданы обязательные параметры') if not list_id || if not merge_id
+    raise ArgumentError.new('Не заданы обязательные параметры') if not list_id || not merge_id
     required = { 'list_id' => list_id, 'merge_id' => merge_id }
     options = required.merge(options)
     send_data 'lists.update_merge', options
@@ -271,7 +271,7 @@ class Pechkin
   #required: list_id, merge_id
   #see: http://pechkin-mail.ru/?page=api_details&method=lists.delete_merge
   def lists_delete_merge list_id = nil, merge_id = nil
-    raise ArgumentError.new('Не заданы обязательные параметры') if not list_id || if not merge_id
+    raise ArgumentError.new('Не заданы обязательные параметры') if not list_id || not merge_id
     options = { 'list_id' => list_id, 'merge_id' => merge_id }
     send_data 'lists.delete_merge', options
   end
