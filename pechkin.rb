@@ -127,6 +127,53 @@ class Pechkin
     errors[key]
   end
 
+  class String
+    def serialize
+      "s:#{self.size}:\"#{self}\";"
+    end
+  end
+
+  class Array
+    def serialize
+      serialized = "a:#{self.size}:{"
+      self.each_with_index do |e, i|
+        serialized += "#{i.serialize}#{e.serialize}"
+      end
+      serialized + "}"
+    end
+  end
+
+  class Hash
+    def serialize
+      serialized = "a:#{self.size}:{"
+      self.each_with_index do |e, i|
+        serialized += "#{i.serialize}#{e.serialize}"
+      end
+      serialized + "}"
+    end
+  end
+
+  class Fixnum
+    def serialize
+      "i:#{self};"
+    end
+  end
+
+  class Float
+    def serialize
+      "d:#{self};"
+    end
+  end
+
+  #serialize hash
+  def serialize hash
+    serialized = "a:#{hash.size}:{"
+    hash.each_pair do |k, e|
+      serialized += "#{k.serialize}#{e.serialize}"
+    end
+    serialized + "}"
+  end
+
   ################## Работа с Адресными Базами ###########################
 
   #lists.get - Получаем список баз пользователя
@@ -274,6 +321,134 @@ class Pechkin
     raise ArgumentError.new('Не заданы обязательные параметры') if not list_id || not merge_id
     options = { 'list_id' => list_id, 'merge_id' => merge_id }
     send_data 'lists.delete_merge', options
+  end
+
+  ##################### Работа с рассылками #####################
+
+  #campaigns.get - Получаем список рассылок пользователя
+  #optional: campaign_id, status, list_id, type
+  #see: http://pechkin-mail.ru/?page=api_details&method=campaigns.get
+  def campaigns_get options = {}
+    get_data 'campaigns.get', options
+  end
+
+  #campaigns.create - Создаем рассылку
+  #required: list_id
+  #optional: name, subject, ...
+  #see: http://pechkin-mail.ru/?page=api_details&method=campaigns.create
+  def campaigns_create list_id = nil, options = {}
+    raise ArgumentError.new('Не заданы обязательные параметры') if not list_id
+    list_id = serialize(list_id);
+    required = { 'list_id' => list_id }
+    options = required.merge(options)
+    send_data 'campaigns.create', options
+  end
+
+  #campaigns.create_auto - Создаем авторассылку
+  #optional: list_id, name, subject
+  #see: http://pechkin-mail.ru/?page=api_details&method=campaigns.create_auto
+  def campaigns_create_auto options = {}
+    options['list_id'] = serialize(options['list_id'])
+    send_data 'campaigns.create_auto', options
+  end
+
+  #campaigns.update - Обновляем параметры рассылки
+  #required: campaign_id
+  #optional: list_id, name, subject, ...
+  #see: http://pechkin-mail.ru/?page=api_details&method=campaigns.update
+  def campaigns_update campaign_id = nil, options = {}
+    raise ArgumentError.new('Не заданы обязательные параметры') if not campaign_id
+    required = { 'campaign_id' => campaign_id }
+    options['list_id'] = serialize(options['list_id'])
+    options = required.merge(options)
+    send_data 'campaigns.update', options
+  end
+
+  #campaigns.update_auto - Обновляем параметры авторассылки
+  #required: campaign_id
+  #optional: list_id, name, subject, ...
+  #see: http://pechkin-mail.ru/?page=api_details&method=campaigns.update_auto
+  def campaigns_update_auto campaign_id = nil, options = {}
+    raise ArgumentError.new('Не заданы обязательные параметры') if not campaign_id
+    required = { 'campaign_id' => campaign_id }
+    options['list_id'] = serialize(options['list_id']
+    options = required.merge(options)
+    send_data 'campaigns.update_auto', options
+  end
+
+  #campaigns.delete - Удаляем рассылку
+  #required: campaign_id
+  #see: http://pechkin-mail.ru/?page=api_details&method=campaigns.delete
+  def campaigns_delete campaign_id = nil
+    raise ArgumentError.new('Не заданы обязательные параметры') if not campaign_id
+    options = { 'campaign_id' => campaign_id }
+    send_data 'campaigns.delete', options
+  end
+
+  #campaigns.attach - Прикрепляем файл
+  #required: campaign_id, url
+  #optional: name
+  #see: http://pechkin-mail.ru/?page=api_details&method=campaigns.attach
+  def campaigns_attach campaign_id =  nil, url = nil, options = {}
+    raise ArgumentError.new('Не заданы обязательные параметры') if not campaign_id || not url
+    raise.ArgumentError.new('Неверный формат URL') if not url.is_a? String
+    required = { 'campaign_id' => campaign_id, 'url' => url }
+    options = required.merge(options)
+    send_data 'campaigns.attach', options
+  end
+
+  #campaigns.get_attachments - Получаем приложенные файлы
+  #required: campaign_id
+  #see: http://pechkin-mail.ru/?page=api_details&method=campaigns.get_attachments
+  def campaigns_get_attachments campaign_id = nil, options = {}
+    raise ArgumentError.new('Не заданы обязательные параметры') if not campaign_id
+    required = { 'campaign_id' => campaign_id }
+    options = required.merge(options)
+    get_data 'campaigns.get_attachments', options
+  end
+
+  #campaigns.delete_attachments - Удаляем приложенный файл
+  #required: campaign_id, id
+  #see: http://pechkin-mail.ru/?page=api_details&method=campaigns.delete_attachments
+  def campaigns_delete_attachments campaign_id = nil, id = nil, options = {}
+    raise ArgumentError.new('Не заданы обязательные параметры') if not campaign_id || not id
+    required = { 'campaign_id' => campaign_id, 'id' => id }
+    options = required.merge(options)
+    send_data 'campaigns.delete_attachments', options
+  end
+
+  #campaigns.get_templates - Получаем html шаблоны
+  #optional: name, id
+  #see: http://pechkin-mail.ru/?page=api_details&method=campaigns.get_templates
+  def campaigns_get_templates options = {}
+    get_data 'campaigns.get_templates', options
+  end
+
+  #campaigns.add_template - Добавляем html шаблон
+  #required: name, template
+  #see: http://pechkin-mail.ru/?page=api_details&method=campaigns.add_template
+  def campaigns_add_template name = nil, template = nil
+    raise ArgumentError.new('Не заданы обязательные параметры') if not name || not template
+    options = { 'name' => name, 'template' => template }
+    send_data 'campaigns.add_templates', options
+  end
+
+  #campaigns.delete_template - Удаляем html шаблон
+  #required: id
+  def campaigns_delete_template id = nil
+    raise ArgumentError.new('Не заданы обязательные параметры') if not id
+    options = { 'id' => id }
+    send_data 'campaigns.delete_templates', options
+  end
+
+  #campaigns.force_auto - Принудительно вызываем срабатывание авторассылки (при этом она должна быть активна)
+  #required: campaign_id, email
+  #optional: delay
+  #see: http://pechkin-mail.ru/?page=api_details&method=campaigns.force_auto
+  def campaigns_force_auto campaign_id = nil, email = nil, options = {}
+    raise ArgumentError.new('Не заданы обязательные параметры') if not campaign_id || not email
+    options = required.merge(options)
+    send_data 'campaigns.force_auto', options
   end
 
 end
