@@ -459,4 +459,106 @@ class Pechkin
     send_data 'campaigns.force_auto', options
   end
 
+  ####################### Работа с отчетами #####################
+
+  #reports.send - Список отправленных писем в рассылке
+  #required: campaign_id
+  #optional: start, limit, order
+  #see: http://pechkin-mail.ru/?page=api_details&method=reports.send
+  def reports_sent campaign_id = nil, options = {}
+    raise ArgumentError.new('Не заданы обязательные параметры') if not campaign_id
+    required = { 'campaign_id' => campaign_id }
+    options = required.merge(options)
+    send_data 'reports.sent', options
+  end
+
+  #reports.delivered - Список доставленных писем в рассылке
+  #required: campaign_id
+  #optional: start, limit, order
+  #see: http://pechkin-mail.ru/?page=api_details&method=reports.delivered
+  def reports_delivered campaign_id = nil, options = {}
+    raise ArgumentError.new('Не заданы обязательные параметры') if not campaign_id
+    required = { 'campaign_id' => campaign_id }
+    options = required.merge(options)
+    get_data 'reports.delivered', options
+  end
+
+  #reports.opened - Список открытых писем в рассылке
+  #required: campaign_id
+  #optional: start, limit, order
+  #see: http://pechkin-mail.ru/?page=api_details&method=reports.opened
+  def reports_opened campaign_id = nil, options = {}
+    raise ArgumentError.new('Не заданы обязательные параметры') if not campaign_id
+    required = { 'campaign_id' => campaign_id }
+    options = required.merge(options)
+    get_data 'reports.opened', options
+  end
+
+  #reports.unsubscribed - Список писем отписавшихся подписчиков в рассылке
+  #required: campaign_id
+  #optional: start, limit, order
+  #see: http://pechkin-mail.ru/?page=api_details&method=reports.unsubscribed
+  def reports_unsubscribed campaign_id = nil, options = {}
+    raise ArgumentError.new('Не заданы обязательные параметры') if not campaign_id
+    required = { 'campaign_id' => campaign_id }
+    options = required.merge(options)
+    get_data 'reports.unsubscribed', options
+  end
+
+  #reports.bounced - Список возвратившихся писем в рассылке
+  #required: campaign_id
+  #optional: start, limit, order
+  #see: http://pechkin-mail.ru/?page=api_details&method=reports.bounced
+  def reports_bounced campaign_id = nil, options = {}
+    raise ArgumentError.new('Не заданы обязательные параметры') if not campaign_id
+    required = { 'campaign_id' => campaign_id }
+    options = required.merge(options)
+    get_data 'reports.unsubscribed', options
+  end
+
+  #reports.clickstat - Cтатистика по кликам по различным url в письме
+  #required: campaign_id
+  #see: http://pechkin-mail.ru/?page=api_details&method=reports.clickstat
+  def reports_clickstat campaign_id = nil
+    raise ArgumentError.new('Не заданы обязательные параметры') if not campaign_id
+    options = { 'campaign_id' => campaign_id }
+    get_data 'reports.clickstat', options
+  end
+
+  #reports.bouncestat - Cтатистика по всевозможным причинам возврата письма
+  #required: campaign_id
+  #see: http://pechkin-mail.ru/?page=api_details&method=reports.bouncestat
+  def reports_bouncestat campaign_id = nil
+    raise ArgumentError.new('Не заданы обязательные параметры') if not campaign_id
+    options = { 'campaign_id' => campaign_id }
+    get_data 'reports.bouncestat', options
+  end
+
+  #reports.summary - Краткая статистика по рассылке
+  #required: campaign_id
+  #see: http://pechkin-mail.ru/?page=api_details&method=reports.summary
+  def reports_summary campaign_id = nil
+    raise ArgumentError.new('Не заданы обязательные параметры') if not campaign_id
+    options = { 'campaign_id' => campaign_id }
+    get_data 'reports.summary', options
+  end
+
+  #reports.clients - Cтатистика по браузерам, ОС и почтовым клиентам
+  #required: campaign_id
+  #see: http://pechkin-mail.ru/?page=api_details&method=reports.clients
+  def reports_clients campaign_id = nil
+    raise ArgumentError.new('Не заданы обязательные параметры') if not campaign_id
+    options = { 'campaign_id' => campaign_id }
+    get_data 'reports.clients', options
+  end
+
+  #reports.geo - Cтатистика по регионам открытия
+  #required: campaign_id
+  #see: http://pechkin-mail.ru/?page=api_details&method=reports.geo
+  def reports_geo campaign_id = nil
+    raise ArgumentError.new('Не заданы обязательные параметры') if not campaign_id
+    options = { 'campaign_id' => campaign_id }
+    get_data 'reports.geo', options
+  end
+
 end
