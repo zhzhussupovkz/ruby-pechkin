@@ -33,16 +33,16 @@ require 'openssl'
 class Pechkin
 
   def initialize api_key= nil, login= nil, pass= nil
-    raise ArgumentError if not api_key
-    raise ArgumentError if not login
-    raise ArgumentError if not pass
+    raise ArgumentError.new('Не заданы обязательные параметры') if not api_key
+    raise ArgumentError.new('Не заданы обязательные параметры') if not login
+    raise ArgumentError.new('Не заданы обязательные параметры') if not pass
     @api_key, @login, @pass = api_key, login, pass
     @api_url = 'https://api.pechkin-mail.ru/'
   end
 
   #get data
   def get_data query=nil, options={}
-    raise ArgumentError if not query.is_a? String
+    raise ArgumentError.new('Не заданы обязательные параметры') if not query.is_a? String
     auth = { 'username' => @login, 'password' => @pass, 'format' => 'json' }
     options = auth.merge(options)
     opts = URI.escape(options.collect{ |k,v| "#{k}=#{v}"}.join('&'))
@@ -62,7 +62,7 @@ class Pechkin
 
   #post data
   def post_data query= nil, options= {}
-    raise ArgumentError if not query.is_a? String
+    raise ArgumentError.new('Не заданы обязательные параметры') if not query.is_a? String
     auth = { 'username' => @login, 'password' => @pass, 'format' => 'json' }
     options = auth.merge(options)
     opts = URI.escape(options.collect{ |k,v| "#{k}=#{v}"}.join('&'))
@@ -79,6 +79,42 @@ class Pechkin
       raise RuntimeError, "Сервер возвращает неверный формат данных."
     end
     result = JSON.parse data
+  end
+
+  #get errors
+  def get_error(key) {
+    errors = {
+      '2' => 'Ошибка при добавлении в базу',
+      '3' => 'Заданы не все необходимые параметры',
+      '4' => 'Нет данных при выводе',
+      '5' => 'У пользователя нет адресной базы с таким id',
+      '6' => 'Некорректный email-адрес',
+      '7' => 'Такой пользователь уже есть в этой адресной базе',
+      '8' => 'Лимит по количеству активных подписчиков на тарифном плане клиента',
+      '9' => 'Нет такого подписчика у клиента',
+      '10' => 'Пользователь уже отписан',
+      '11' => 'Нет данных для обновления подписчика',
+      '12' => 'Не заданы элементы списка',
+      '13' => 'Не задано время рассылки',
+      '14' => 'Не задан заголовок письма',
+      '15' => 'Не задано поле От Кого?',
+      '16' => 'Не задан обратный адрес',
+      '17' => 'Не задана ни html ни plain_text версия письма',
+      '18' => 'Нет ссылки отписаться в тексте рассылки. Пример ссылки: отписаться',
+      '19' => 'Нет ссылки отписаться в тексте рассылки',
+      '20' => 'Задан недопустимый статус рассылки',
+      '21' => 'Рассылка уже отправляется',
+      '22' => 'У вас нет кампании с таким campaign_id',
+      '23' => 'Нет такого поля для сортировки',
+      '24' => 'Заданы недопустимые события для авторассылки',
+      '25' => 'Загружаемый файл уже существует',
+      '26' => 'Загружаемый файл больше 5 Мб',
+      '27' => 'Файл не найден',
+      '28' => 'Указанный шаблон не существует',
+      '100' => 'Неверные данные для подключения API',
+      '101' => 'Несуществующий метод API или указан некорректный метод API',
+    }
+    errors[key]
   end
 
   ################## Работа с Адресными Базами ###########################
@@ -99,7 +135,7 @@ class Pechkin
   #optional: abuse_email, abuse_name, company...
   #http://pechkin-mail.ru/?page=api_details&method=lists.add
   def lists_add name = nil, options = {}
-    raise ArgumentError if not name
+    raise ArgumentError.new('Не заданы обязательные параметры') if not name
     required = { 'name' => name }
     options = required.merge(options)
     send_data 'lists.add', options
@@ -110,8 +146,8 @@ class Pechkin
   #optional: name, abuse_email, abuse_name, company...
   #see: http://pechkin-mail.ru/?page=api_details&method=lists.update
   def lists_update list_id = nil, options = {}
-    raise ArgumentError if not list_id
-    list_id = { 'list_id' => list_id
+    raise ArgumentError.new('Не заданы обязательные параметры') if not list_id
+    list_id = { 'list_id' => list_id }
     options = list_id.merge(options)
     send_data 'lists.update', options
   end
@@ -119,7 +155,7 @@ class Pechkin
   #lists.delete - Удаляем адресную базу и всех активных подписчиков в ней.
   #required: list_id
   def lists_delete list_id = nil
-    raise ArgumentError if not list_id
+    raise ArgumentError.new('Не заданы обязательные параметры') if not list_id
     options = { 'list_id' => list_id }
     send_data 'lists.delete', options
   end
@@ -129,7 +165,7 @@ class Pechkin
   #optional: state, start, limit...
   #see: http://pechkin-mail.ru/?page=api_details&method=lists.get_members
   def lists_get_members list_id = nil, options = {}
-    raise ArgumentError if not list_id
+    raise ArgumentError.new('Не заданы обязательные параметры') if not list_id
     required = { 'list_id' => list_id }
     options = required.merge(options)
     get_data 'lists.get_members', options
@@ -140,7 +176,7 @@ class Pechkin
   #optional: merge_1, merge_2, type, update...
   #see: http://pechkin-mail.ru/?page=api_details&method=lists.upload
   def lists_upload list_id = nil, file = nil, email = nil, options = {}
-    raise ArgumentError if not list_id || if not file || if not email
+    raise ArgumentError.new('Не заданы обязательные параметры') if not list_id || if not file || if not email
     required = { 'list_id' => list_id, 'file' => file, 'email' => email }
     options = required.merge(options)
     send_data 'lists.upload', options
@@ -151,7 +187,7 @@ class Pechkin
   #optional: merge_1, merge_2..., update...
   #see: http://pechkin-mail.ru/?page=api_details&method=lists.add_member
   def lists_add_member list_id = nil, email = nil, options = {}
-    raise ArgumentError if not list_id || if not email
+    raise ArgumentError.new('Не заданы обязательные параметры') if not list_id || if not email
     required = { 'list_id' => list_id, 'email' => email }
     options = required.merge(options)
     send_data 'lists.add_member', options
@@ -162,7 +198,7 @@ class Pechkin
   #optional: merge_1, merge_2...
   #see: http://pechkin-mail.ru/?page=api_details&method=lists.update_member
   def lists_update_member member_id = nil, options = {}
-    raise ArgumentError if not member_id
+    raise ArgumentError.new('Не заданы обязательные параметры') if not member_id
     required = { 'member_id' => member_id }
     options = required.merge(options)
     send_data 'lists.update_member', options
@@ -171,7 +207,7 @@ class Pechkin
   #lists.delete_member - Удаляем подписчика из базы
   #required: member_id
   def lists_delete_member member_id = nil
-    raise ArgumentError if not member_id
+    raise ArgumentError.new('Не заданы обязательные параметры') if not member_id
     options = { 'member_id' => member_id }
     send_data 'lists.delete_member', options
   end
@@ -186,7 +222,7 @@ class Pechkin
   #lists.move_member - Перемещаем подписчика в другую адресную базу.
   #required: member_id, list_id
   def lists_move_member member_id = nil, list_id = nil
-    raise ArgumentError if not member_id || if not list_id
+    raise ArgumentError.new('Не заданы обязательные параметры') if not member_id || if not list_id
     options = { 'member_id' => member_id, 'list_id' => list_id }
     send_data 'lists.move_member', options
   end
@@ -194,7 +230,7 @@ class Pechkin
   #lists.copy_member - Копируем подписчика в другую адресную базу
   #required: member_id, list_id
   def lists_copy_member member_id = nil, list_id = nil
-    raise ArgumentError if not member_id || if not list_id
+    raise ArgumentError.new('Не заданы обязательные параметры') if not member_id || if not list_id
     options = { 'member_id' => member_id, 'list_id' => list_id }
     send_data 'lists.copy_member', options
   end
@@ -204,7 +240,7 @@ class Pechkin
   #optional: choises, title, ...
   #see: http://pechkin-mail.ru/?page=api_details&method=lists.add_merge
   def lists_add_merge list_id = nil, type = nil, options = {}
-    raise ArgumentError if not list_id || if not type
+    raise ArgumentError.new('Не заданы обязательные параметры') if not list_id || if not type
     required = { 'list_id' => list_id, 'type' => type }
     options = required.merge(options)
     send_data 'lists.add_merge', options
@@ -215,7 +251,7 @@ class Pechkin
   #optional: choisesm title, ...
   #see: http://pechkin-mail.ru/?page=api_details&method=lists.update_merge
   def lists_update_merge list_id = nil, merge_id = nil, options = {}
-    raise ArgumentError if not list_id || if not merge_id
+    raise ArgumentError.new('Не заданы обязательные параметры') if not list_id || if not merge_id
     required = { 'list_id' => list_id, 'merge_id' => merge_id }
     options = required.merge(options)
     send_data 'lists.update_merge', options
@@ -225,7 +261,7 @@ class Pechkin
   #required: list_id, merge_id
   #see: http://pechkin-mail.ru/?page=api_details&method=lists.delete_merge
   def lists_delete_merge list_id = nil, merge_id = nil
-    raise ArgumentError if not list_id || if not merge_id
+    raise ArgumentError.new('Не заданы обязательные параметры') if not list_id || if not merge_id
     options = { 'list_id' => list_id, 'merge_id' => merge_id }
     send_data 'lists.delete_merge', options
   end
