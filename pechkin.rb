@@ -131,6 +131,14 @@ class Pechkin
     def serialize
       "s:#{self.size}:\"#{self}\";"
     end
+
+    def is_json?
+      begin
+        !!JSON.parse(self)
+      rescue
+        false
+      end
+    end
   end
 
   class Array
