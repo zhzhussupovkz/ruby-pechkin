@@ -519,7 +519,7 @@ class Pechkin
   #reports.clickstat - Cтатистика по кликам по различным url в письме
   #required: campaign_id
   #see: http://pechkin-mail.ru/?page=api_details&method=reports.clickstat
-  def reports_clickstat campaign_id = nil
+  def reports_clickstat campaign_id = nil, options = {}
     raise ArgumentError.new('Не заданы обязательные параметры') if not campaign_id
     options = { 'campaign_id' => campaign_id }
     get_data 'reports.clickstat', options
@@ -528,7 +528,7 @@ class Pechkin
   #reports.bouncestat - Cтатистика по всевозможным причинам возврата письма
   #required: campaign_id
   #see: http://pechkin-mail.ru/?page=api_details&method=reports.bouncestat
-  def reports_bouncestat campaign_id = nil
+  def reports_bouncestat campaign_id = nil, options = {}
     raise ArgumentError.new('Не заданы обязательные параметры') if not campaign_id
     options = { 'campaign_id' => campaign_id }
     get_data 'reports.bouncestat', options
@@ -537,7 +537,7 @@ class Pechkin
   #reports.summary - Краткая статистика по рассылке
   #required: campaign_id
   #see: http://pechkin-mail.ru/?page=api_details&method=reports.summary
-  def reports_summary campaign_id = nil
+  def reports_summary campaign_id = nil, options = {}
     raise ArgumentError.new('Не заданы обязательные параметры') if not campaign_id
     options = { 'campaign_id' => campaign_id }
     get_data 'reports.summary', options
@@ -546,7 +546,7 @@ class Pechkin
   #reports.clients - Cтатистика по браузерам, ОС и почтовым клиентам
   #required: campaign_id
   #see: http://pechkin-mail.ru/?page=api_details&method=reports.clients
-  def reports_clients campaign_id = nil
+  def reports_clients campaign_id = nil, options = {}
     raise ArgumentError.new('Не заданы обязательные параметры') if not campaign_id
     options = { 'campaign_id' => campaign_id }
     get_data 'reports.clients', options
@@ -555,7 +555,7 @@ class Pechkin
   #reports.geo - Cтатистика по регионам открытия
   #required: campaign_id
   #see: http://pechkin-mail.ru/?page=api_details&method=reports.geo
-  def reports_geo campaign_id = nil
+  def reports_geo campaign_id = nil, options = {}
     raise ArgumentError.new('Не заданы обязательные параметры') if not campaign_id
     options = { 'campaign_id' => campaign_id }
     get_data 'reports.geo', options
