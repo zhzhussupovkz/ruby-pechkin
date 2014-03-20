@@ -51,7 +51,7 @@ class Pechkin
     http = Net::HTTP.new uri.host, uri.port
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    req = Net::HTTP::Get.new uri.reuest_uri
+    req = Net::HTTP::Get.new uri.request_uri
     res = http.request req
     data = res.body
     if not data.is_a? String or not data.is_json?
